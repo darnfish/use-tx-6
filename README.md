@@ -12,13 +12,9 @@ The following demo will let you adjust the font size of the text using the slide
 import useTX6, { useTX6Attribute } from 'use-tx-6'
 
 export default function App() {
-	const { tx6, status, error, connect } = useTX6()
+	const { connect, status, error } = useTX6()
 
-	const { progress } = useTX6Attribute(tx6, 'input1.slider')
-
-	// Other possibilities
-	const { pressed } = useTX6Attribute(tx6, 'select.button')
-	const { direction } = useTX6Attribute(tx6, 'select.encoder')
+	const { progress } = useTX6Attribute('input1.slider')
 
 	switch(status) {
 	case 'disconnected':
@@ -42,9 +38,9 @@ export default function App() {
 }
 ```
 
-If you want to access multiple attributes at the same time, use `useTX6Attribute`—this is useful for the EQ knobs:
+If you want to access multiple attributes at the same time, use `useTX6Attributes`—this is useful for the EQ knobs:
 ```ts
-const [{ progress: eq1 }, { progress: eq2 }, { progress: eq3 }] = useTX6Attributes(tx6, ['input1.eq1', 'input1.eq2', 'input1.eq3'])
+const [{ progress: eq1 }, { progress: eq2 }, { progress: eq3 }] = useTX6Attributes(['input1.eq1', 'input1.eq2', 'input1.eq3'])
 ```
 
 ## License

@@ -1,6 +1,6 @@
 {
   "name": "use-tx-6",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "React hooks for teenage engineering TX-6",
   "repository": "https://github.com/darnfish/use-tx-6.git",
   "author": "William Gibson <william@darn.fish>",
@@ -12,7 +12,8 @@
     "lint:fix": "yarn lint --fix"
   },
   "dependencies": {
-    "eventemitter3": "^5.0.0"
+    "eventemitter3": "^5.0.0",
+    "zustand": "^4.3.1"
   },
   "devDependencies": {
     "@types/node": "18.11.18",
