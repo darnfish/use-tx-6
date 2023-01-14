@@ -1,14 +1,12 @@
-import EventEmitter from 'eventemitter3'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { create } from 'zustand'
+import EventEmitter from 'eventemitter3'
 
 import TX6, { TX6EventParameters, TX6EventType } from './events'
 
-const SERVICE_UUID = '03B80E5A-EDE8-4B33-A751-6CE34EC4C700'.toLowerCase()
-const CHARACTERISTIC_UUID = '7772E5DB-3868-4112-A1A9-F2669D106BF3'.toLowerCase()
-
 type TX6Emitter = EventEmitter<TX6EventType, TX6EventParameters>
+type TX6ConnectionStatus = 'disconnected' | 'connecting' | 'connected'
 
 interface TX6State {
   tx6: TX6Emitter | null
@@ -20,10 +18,13 @@ const useStore = create<TX6State>((set) => ({
 	setTX6: tx6 => set({ tx6 })
 }))
 
+const SERVICE_UUID = '03B80E5A-EDE8-4B33-A751-6CE34EC4C700'.toLowerCase()
+const CHARACTERISTIC_UUID = '7772E5DB-3868-4112-A1A9-F2669D106BF3'.toLowerCase()
+
 export default function useTX6() {
 	const [tx6] = useState(new EventEmitter<TX6EventType, TX6EventParameters>())
 	const [error, setError] = useState<Error>()
-	const [status, setStatus] = useState('disconnected')
+	const [status, setStatus] = useState<TX6ConnectionStatus>('disconnected')
 
 	const setTX6 = useStore(state => state.setTX6)
 
@@ -33,25 +34,39 @@ export default function useTX6() {
 	const characteristicRef = useRef<BluetoothRemoteGATTCharacteristic>()
 
 	const connect = useCallback(async () => {
+		setError(undefined)
 		setStatus('connecting')
 
 		try {
+			if(!navigator.bluetooth)
+				throw new Error('Browser does not support WebBluetooth')
+
+			// Request MIDI device
 			deviceRef.current = await navigator.bluetooth.requestDevice({ filters: [{ services: [SERVICE_UUID] }] })
 			if(!deviceRef.current.gatt)
 				throw new Error('No GATT server found')
 
+			// Add disconnected callback
+			deviceRef.current.addEventListener('gattserverdisconnected', onGATTServerDisconnected)
+
+			// Connect to GATT server
 			serverRef.current = await deviceRef.current.gatt.connect()
 
+			// Get service
 			const [service] = await serverRef.current.getPrimaryServices()
 			serviceRef.current = service
 
+			// Get characteristic
 			const [characteristic] = await serviceRef.current.getCharacteristics(CHARACTERISTIC_UUID)
 			characteristicRef.current = characteristic
 
+			// Add value listener
 			characteristicRef.current.addEventListener('characteristicvaluechanged', onCharacteristicValueChanged)
 
+			// Start value listener
 			await characteristicRef.current.startNotifications()
 
+			// Update status
 			setStatus('connected')
 		} catch(error) {
 			setError(error)
@@ -60,12 +75,28 @@ export default function useTX6() {
 	}, [])
 
 	const onCharacteristicValueChanged = useCallback(event => {
+		// Get midi event type
 		const dv = event.target.value as DataView
 		const midiEvent = dv.getUint16(3)
 
+		// Decode and dispatch thru TX6 emitter
 		const { event: eventName, ...parameters } = TX6[midiEvent]
 
 		tx6.emit(eventName, parameters)
+	}, [])
+
+	const onGATTServerDisconnected = useCallback(() => {
+		// Remove event listener
+		deviceRef.current?.removeEventListener('gattserverdisconnected', onGATTServerDisconnected)
+
+		// Reset state
+		setError(undefined)
+		setStatus('disconnected')
+
+		deviceRef.current = undefined
+		serverRef.current = undefined
+		serviceRef.current = undefined
+		characteristicRef.current = undefined
 	}, [])
 
 	useEffect(() => {
