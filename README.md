@@ -43,5 +43,8 @@ If you want to access multiple attributes at the same time, use `useTX6Attribute
 const [{ progress: eq1 }, { progress: eq2 }, { progress: eq3 }] = useTX6Attributes(['input1.eq1', 'input1.eq2', 'input1.eq3'])
 ```
 
+## Thanks
+Inspired by [this demo](https://twitter.com/hturan/status/1523702486258782208) by [@hturan@twitter.com](https://twitter.com/hturan).
+
 ## License
 MIT
