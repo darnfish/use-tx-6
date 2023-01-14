@@ -12,29 +12,29 @@ The following demo will let you adjust the font size of the text using the slide
 import useTX6, { useTX6Attribute } from 'use-tx-6'
 
 export default function App() {
-	const { connect, status, error } = useTX6()
+  const { connect, status, error } = useTX6()
 
-	const { progress } = useTX6Attribute('input1.slider')
+  const { progress } = useTX6Attribute('input1.slider')
 
-	switch(status) {
-	case 'disconnected':
-		return (
-			<>
-				<button onClick={connect}>connect to TX-6</button>
-				{error && (
-					<p>error connecting to TX-6: {error.toString()}</p>
-				)}
-			</>
-		)
-	case 'connecting':
-		return (
-			<p>connecting to TX-6...</p>
-		)
-	}
+  switch(status) {
+  case 'disconnected':
+    return (
+      <>
+        <button onClick={connect}>connect to TX-6</button>
+        {error && (
+          <p>error connecting to TX-6: {error.toString()}</p>
+        )}
+      </>
+    )
+  case 'connecting':
+    return (
+      <p>connecting to TX-6...</p>
+    )
+  }
 
-	return (
-		<span style={{ fontSize: `${progress * 100}px` }}>connected to TX-6</span>
-	)
+  return (
+    <span style={{ fontSize: `${progress * 100}px` }}>connected to TX-6</span>
+  )
 }
 ```
 
