@@ -8,7 +8,7 @@ yarn add use-tx-6
 
 ## Usage
 The following demo will let you adjust the font size of the text using the slider for channel 1:
-```ts
+```tsx
 import useTX6, { useTX6Attribute } from 'use-tx-6'
 
 export default function App() {
@@ -39,7 +39,7 @@ export default function App() {
 ```
 
 If you want to access multiple attributes at the same time, use `useTX6Attributes`—this is useful for the EQ knobs:
-```ts
+```tsx
 const [{ progress: eq1 }, { progress: eq2 }, { progress: eq3 }] = useTX6Attributes(['input1.eq1', 'input1.eq2', 'input1.eq3'])
 ```
 
