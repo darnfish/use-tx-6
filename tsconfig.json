@@ -1,23 +1,23 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "lib": ["dom", "esnext"],
-    "jsx": "react",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "outDir": "lib/",
-    "sourceMap": true,
-    "declaration": true,
-    "inlineSources": true,
-    "strictNullChecks": true,
-    "strictPropertyInitialization": true,
-    "strictFunctionTypes": true,
-    "skipLibCheck": true,
-    "noImplicitThis": true,
-    "noImplicitReturns": true
-  }
+	"compilerOptions": {
+		"target": "es6",
+		"module": "commonjs",
+		"jsx": "react",
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"typeRoots": [
+			"node_modules/@types"
+		],
+		"outDir": "lib/",
+		"sourceMap": true,
+		"declaration": true,
+		"inlineSources": true,
+		"strictNullChecks": true,
+		"strictPropertyInitialization": true,
+		"strictFunctionTypes": true,
+		"skipLibCheck": true,
+		"noImplicitThis": true,
+		"noImplicitReturns": true
+	}
 }
